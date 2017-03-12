@@ -25,7 +25,14 @@ tm_len_t __trieMapNode_Sizeof(tm_len_t numChildren, tm_len_t slen) {
 }
 
 TrieMapNode *__trieMapNode_resizeChildren(TrieMapNode *n, int offset) {
-  n = realloc(n, __trieMapNode_Sizeof(n->numChildren + offset, n->len));
+  TrieMapNode *new_node = realloc(n, __trieMapNode_Sizeof(n->numChildren + offset, n->len));
+  if (new_node == NULL) {
+    free(n);
+    printf("No enough space to allocate memory");
+    exit(1);
+  } else {
+    n = new_node;
+  }
   TrieMapNode **children = __trieMapNode_children(n);
 
   // stretch or shrink the child key cache array
@@ -89,7 +96,14 @@ TrieMapNode *__trieMapNode_Split(TrieMapNode *n, tm_len_t offset) {
   // the parent node is now non terminal and non sorted
   n->flags = 0;  //&= ~(TM_NODE_TERMINAL | TM_NODE_DELETED | TM_NODE_SORTED);
 
-  n = realloc(n, __trieMapNode_Sizeof(n->numChildren, n->len));
+  TrieMapNode *new_node = realloc(n, __trieMapNode_Sizeof(n->numChildren, n->len));
+  if (new_node == NULL) {
+    free(n);
+    printf("No enough space to allocate memory");
+    exit(1);
+  } else {
+    n = new_node;
+  }
   __trieMapNode_children(n)[0] = newChild;
   *__trieMapNode_childKey(n, 0) = newChild->str[0];
   return n;
@@ -348,7 +362,14 @@ int TrieMapNode_Delete(TrieMapNode *n, char *str, tm_len_t len, void (*freeCB)(v
     stack[stackPos++] = n;
     if (stackPos == stackCap) {
       stackCap *= 2;
-      stack = realloc(stack, stackCap * sizeof(TrieMapNode *));
+      TrieMapNode **new_stack = realloc(stack, stackCap * sizeof(TrieMapNode *));
+      if (new_stack == NULL) {
+        free(stack);
+        printf("No enough space to allocate memory");
+        exit(1);
+      } else {
+        stack = new_stack;
+      }
     }
     tm_len_t localOffset = 0;
     for (; offset < len && localOffset < n->len; offset++, localOffset++) {
@@ -454,7 +475,14 @@ void TrieMapNode_Free(TrieMapNode *n, void (*freeCB)(void *)) {
 inline void __tmi_Push(TrieMapIterator *it, TrieMapNode *node) {
   if (it->stackOffset == it->stackCap) {
     it->stackCap = MIN(it->stackCap * 2, 1024);
-    it->stack = realloc(it->stack, it->stackCap * sizeof(__tmi_stackNode));
+    __tmi_stackNode new_node = realloc(it->stack, it->stackCap * sizeof(__tmi_stackNode));
+    if (new_node == NULL) {
+      free(it->stack);
+      printf("No enough space to allocate memory");
+      exit(1);
+    } else {
+      it->stack = new_node;
+    }
   }
   it->stack[it->stackOffset++] = (__tmi_stackNode){
       .childOffset = 0, .stringOffset = 0, .n = node, .state = TM_ITERSTATE_SELF,
@@ -517,7 +545,14 @@ int TrieMapIterator_Next(TrieMapIterator *it, char **ptr, tm_len_t *len, void **
         // if needed - increase the buffer on the heap
         if (it->bufOffset == it->bufLen) {
           it->bufLen *= 2;
-          it->buf = realloc(it->buf, it->bufLen);
+          char *new_buf = realloc(it->buf, it->bufLen);
+          if (new_buf == NULL) {
+            free(it->buf);
+            printf("No enough space to allocate memory");
+            exit(1);
+          } else {
+            it->buf = new_buf;
+          }
         }
       }
 
@@ -606,7 +641,14 @@ TrieMapNode *TrieMapNode_RandomWalk(TrieMapNode *n, int minSteps, char **str, tm
     steps++;
     if (stackSz == stackCap) {
       stackCap += minSteps;
-      stack = realloc(stack, stackCap);
+      TrieMapNode **new_stack = realloc(stack, stackCap);
+      if (new_stack == NULL) {
+        free(stack);
+        printf("No enough space to allocate memory");
+        exit(1);
+      } else {
+        stack = new_stack;
+      }
     }
 
     bufCap += n->len;
