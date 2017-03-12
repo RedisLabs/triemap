@@ -198,15 +198,6 @@ static int __cmp_chars(const void *p1, const void *p2) {
   return *(char *)p1 - *(char *)p2;
 }
 
-/* Sort the children of a node by their first letter to allow binary search */
-static inline void __trieNode_sortChildren(TrieMapNode *n) {
-  if ((0 == (n->flags & TM_NODE_SORTED)) && n->numChildren > 3) {
-    qsort(__trieMapNode_children(n), n->numChildren, sizeof(TrieMapNode *), __cmp_nodes);
-    qsort(__trieMapNode_childKey(n, 0), n->numChildren, 1, __cmp_chars);
-    n->flags |= TM_NODE_SORTED;
-  }
-}
-
 void *TrieMapNode_Find(TrieMapNode *n, char *str, tm_len_t len) {
   tm_len_t offset = 0;
   while (n && (offset < len || len == 0)) {
@@ -475,7 +466,7 @@ void TrieMapNode_Free(TrieMapNode *n, void (*freeCB)(void *)) {
 inline void __tmi_Push(TrieMapIterator *it, TrieMapNode *node) {
   if (it->stackOffset == it->stackCap) {
     it->stackCap = MIN(it->stackCap * 2, 1024);
-    __tmi_stackNode new_node = realloc(it->stack, it->stackCap * sizeof(__tmi_stackNode));
+    __tmi_stackNode *new_node = realloc(it->stack, it->stackCap * sizeof(__tmi_stackNode));
     if (new_node == NULL) {
       free(it->stack);
       printf("No enough space to allocate memory");
