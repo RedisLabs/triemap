@@ -53,7 +53,7 @@ typedef void *(*TrieMapReplaceFunc)(void *oldval, void *newval);
 *
 * If value is given, it is saved as a pyaload inside the trie node.
 * If the key already exists, we replace the old value with the new value, using
-* free() to free the old value.
+* triemap_free() to free the old value.
 *
 * If cb is given, instead of replacing and freeing, we call the callback with
 * the old and new value, and the function should return the value to set in the
