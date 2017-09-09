@@ -129,6 +129,9 @@ void __tmi_Pop(TrieMapIterator *it);
 TrieMapIterator *TrieMap_Iterate(TrieMap *t, const char *prefix,
                                  tm_len_t prefixLen);
 
+/* Resets iterator for reuse. */
+void TrieMapIterator_Reset(TrieMapIterator *it, TrieMap *t, const char *prefix, tm_len_t len);
+
 /* Free a trie iterator */
 void TrieMapIterator_Free(TrieMapIterator *it);
 
