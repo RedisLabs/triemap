@@ -548,6 +548,16 @@ TrieMapIterator *TrieMap_Iterate(TrieMap *t, const char *prefix, tm_len_t len) {
   return it;
 }
 
+void TrieMapIterator_Reset(TrieMapIterator *it, TrieMap *t, const char *prefix, tm_len_t len) {
+  it->bufOffset = 0;
+  it->inSuffix = 0;
+  it->stackOffset = 0;
+  it->prefix = prefix;
+  it->prefixLen = len;
+
+  __tmi_Push(it, t->root);
+}
+
 void TrieMapIterator_Free(TrieMapIterator *it) {
   free(it->buf);
   free(it->stack);
