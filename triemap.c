@@ -286,7 +286,7 @@ TrieMapNode *TrieMapNode_FindNode(TrieMapNode *n, char *str, tm_len_t len,
     }
 
     // we've reached the end of the string - return the node even if it's not
-    // temrinal
+    // terminal
     if (offset == len) {
       // let the caller know the local offset
       if (poffset) {
@@ -504,7 +504,7 @@ void TrieMapNode_Free(TrieMapNode *n, void (*freeCB)(void *)) {
 /* the current top of the iterator stack */
 #define __tmi_current(it) &it->stack[it->stackOffset - 1]
 
-/* Step itearator return codes below: */
+/* Step iterator return codes below: */
 
 #define TM_ITERSTATE_SELF 0
 #define TM_ITERSTATE_CHILDREN 1
