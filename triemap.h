@@ -51,7 +51,7 @@ typedef void *(*TrieMapReplaceFunc)(void *oldval, void *newval);
 /* Add a new string to a trie. Returns 1 if the key is new to the trie or 0 if
 * it already existed.
 *
-* If value is given, it is saved as a pyaload inside the trie node.
+* If value is given, it is saved as a payload inside the trie node.
 * If the key already exists, we replace the old value with the new value, using
 * free() to free the old value.
 *
@@ -68,7 +68,7 @@ int TrieMap_Add(TrieMap *t, char *str, tm_len_t len, void *value,
  *
  * NOTE: If the key does not exist in the trie, we return the special
  * constant value TRIEMAP_NOTFOUND, so checking if the key exists is done by
- * comparing to it, becase NULL can be a valid result.
+ * comparing to it, because NULL can be a valid result.
 */
 void *TrieMap_Find(TrieMap *t, char *str, tm_len_t len);
 
